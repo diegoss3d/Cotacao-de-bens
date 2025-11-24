@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS FinancialMarketPrice (
+	idTransacao BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	ativo VARCHAR NOT NULL,
+	preco DECIMAL NOT NULL,
+	moeda VARCHAR NOT NULL,
+	horario_coleta TIMESTAMP NOT NULL,
+	dataIngest TIMESTAMP NOT NULL
+);
+
+
+SELECT * FROM FinancialMarketPrice;
+
+INSERT INTO FinancialMarketPrice VALUES (default, 'BTC', 90399.99, 'USD', '2025-11-20 12:33:30', '2025-11-24 10:44:03');
