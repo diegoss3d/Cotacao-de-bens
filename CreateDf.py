@@ -6,39 +6,31 @@ from GetPricesLoopDb import salvar_cotacao
 from datetime import datetime
 import os
 
-
-
 # Coletar os valores
 valores_Bitcoin = get_bitcoin_price()
 valores_Commodities = GetCommodities_price()
 
-# Funcao para criar o DataFrame e salvar em CSV
-def Cria_df(valores_Bitcoin, valores_Commodities):
-    # Se o arquivo ja existe, carrega
-    if os.path.exists("cotacao.csv"):
-        df = pd.read_csv("cotacao.csv")
-    else:
-        # Se nao existe, cria vazio com colunas
-        df = pd.DataFrame(columns=['ativo', 'preco', 'moeda', 'horario_coleta'])
-        df = pd.concat([df, valores_Commodities], ignore_index=True)
-        df = pd.concat([df, valores_Bitcoin], ignore_index=True)
-    
-    # Salvando no banco de dados
-    salvar_cotacao(ativo=df['ativo'][0],
-                   preco=float(df['preco'][0]),
-                   moeda=df['moeda'][0],
-                   horario_coleta=df['horario_coleta'][0], 
-                   dataIngest=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    
-    
-    
-    print('Cotacao salva com sucesso no banco de dados!')
-    #print(salvar_cota)
-    return df
+# Função para preparar e salvar os dados 
+def dataPrepared(valores):
+    # Se for uma lista, ele extrai os dicionários da lista antes de salvar cada dicionário
+    if isinstance(valores, list):
+        for item in valores:
+            salvar_cotacao(
+                ativo=item['ativo'],
+                preco=float(item['preco']),
+                moeda=item['moeda'],
+                horario_coleta=item['horario_coleta'],
+                dataIngest=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            )
+    # Se for um dicionário, salva diretamente
+    elif isinstance(valores, dict):
+        salvar_cotacao(
+            ativo=valores['ativo'],
+            preco=float(valores['preco']),
+            moeda=valores['moeda'],
+            horario_coleta=valores['horario_coleta'],
+            dataIngest=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        )
 
-df = Cria_df(valores_Bitcoin, valores_Commodities)
-
-
-
-
-
+dataPrepared(valores_Commodities)
+dataPrepared(valores_Bitcoin)

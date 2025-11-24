@@ -11,16 +11,16 @@ def get_bitcoin_price():
     response = requests.get(url)
     data = response.json()
     
-  
+    # Definindo as variáveis
     preco = round(float(data['data']['amount']), 2)
     ativo = data['data']['base']
     moeda = data['data']['currency']
     horario_coleta = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    # Os valores são retornados em um dicionário e usados posteriormente
     valores = {'ativo': ativo, 'preco': preco, 'moeda': moeda, 'horario_coleta': horario_coleta}
     
-    df = pd.DataFrame([valores]) 
 
-    return df
+    return valores
 
 
